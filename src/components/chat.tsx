@@ -164,6 +164,7 @@ function ToolCard({ part }: { part: any }) {
 // ─── Proof Result Card ───────────────────────────────────────
 
 function ProofResultCard({ text }: { text: string }) {
+  const proofFeedback = extractSection(text, "Proof Feedback");
   const statement = extractSection(text, "Statement");
   const keyInsight = extractSection(text, "Key Insight");
   const proofStructure = extractSection(text, "Proof Structure");
@@ -184,6 +185,19 @@ function ProofResultCard({ text }: { text: string }) {
 
   return (
     <div className="space-y-4 msg-animate">
+      {/* Proof Feedback — shown first when user submitted their own proof */}
+      {proofFeedback && (
+        <div className="rounded-xl border border-blue-500/20 bg-blue-500/[0.04] p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Brain className="w-3.5 h-3.5 text-blue-400" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-400">Feedback on Your Proof</span>
+          </div>
+          <div className="text-sm text-[var(--text-secondary)] leading-relaxed proof-prose">
+            <Md>{proofFeedback}</Md>
+          </div>
+        </div>
+      )}
+
       {/* Statement */}
       {statement && (
         <div className="text-sm text-[var(--text-secondary)] leading-relaxed">
