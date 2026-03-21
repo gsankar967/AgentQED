@@ -1,8 +1,49 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces */
+  --surface-0: #08080d;
+  --surface-1: #0a0a0f;
+  --surface-2: #0f0f18;
+  --surface-3: #141420;
+  --surface-hover: #1a1a2e;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.15);
+
+  /* Text */
+  --text-primary: #ededed;
+  --text-secondary: rgba(255, 255, 255, 0.70);
+  --text-tertiary: rgba(255, 255, 255, 0.45);
+  --text-muted: rgba(255, 255, 255, 0.25);
+
+  /* Violet */
+  --violet-400: #a78bfa;
+  --violet-500: #8b5cf6;
+  --violet-600: #7c3aed;
+  --violet-bg: rgba(139, 92, 246, 0.08);
+  --violet-border: rgba(139, 92, 246, 0.20);
+
+  /* Emerald */
+  --emerald-400: #34d399;
+  --emerald-bg: rgba(16, 185, 129, 0.08);
+  --emerald-border: rgba(16, 185, 129, 0.20);
+
+  /* Amber */
+  --amber-400: #fbbf24;
+  --amber-bg: rgba(251, 191, 36, 0.08);
+  --amber-border: rgba(251, 191, 36, 0.20);
+
+  /* Red */
+  --red-400: #f87171;
+  --red-bg: rgba(248, 113, 113, 0.08);
+  --red-border: rgba(248, 113, 113, 0.20);
+
+  --background: #0a0a0f;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -12,15 +53,236 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Vignette overlay for Mandelbrot */
+.bg-vignette {
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    transparent 30%,
+    rgba(8, 8, 13, 0.75) 100%
+  );
 }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+/* Proof prose — structured output */
+.proof-prose h2 {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.375rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.proof-prose h2:first-child { margin-top: 0; }
+
+.proof-prose h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 1rem;
+  margin-bottom: 0.375rem;
+}
+
+.proof-prose pre {
+  background: var(--surface-3) !important;
+  border: 1px solid var(--border-default);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  overflow-x: auto;
+  max-height: 300px;
+}
+
+.proof-prose code {
+  color: #c4b5fd !important;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8125em;
+}
+
+.proof-prose pre code {
+  color: #e2e8f0 !important;
+}
+
+.proof-prose p {
+  margin-bottom: 0.5rem;
+  line-height: 1.65;
+}
+
+.proof-prose ol {
+  counter-reset: step;
+  list-style: none;
+  padding-left: 0;
+  margin: 0.5rem 0;
+}
+
+.proof-prose ol > li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 0.375rem;
+  font-size: 0.8125rem;
+}
+
+.proof-prose ol > li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0.125rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 9999px;
+  background: var(--violet-bg);
+  border: 1px solid var(--violet-border);
+  color: var(--violet-400);
+  font-size: 0.625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.125rem;
+}
+
+.proof-prose ul {
+  padding-left: 1rem;
+  margin: 0.375rem 0;
+}
+
+.proof-prose ul > li {
+  margin-bottom: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+/* Collapsible section */
+.collapsible-section summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.625rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 150ms;
+  user-select: none;
+}
+
+.collapsible-section summary:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-default);
+}
+
+.collapsible-section summary::-webkit-details-marker { display: none; }
+
+.collapsible-section summary .chevron {
+  transition: transform 200ms;
+  color: var(--text-muted);
+}
+
+.collapsible-section[open] summary .chevron {
+  transform: rotate(90deg);
+}
+
+.collapsible-section .section-content {
+  padding-top: 0.75rem;
+}
+
+/* Key insight highlight box */
+.insight-highlight {
+  background: var(--violet-bg);
+  border: 1px solid var(--violet-border);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  position: relative;
+}
+
+.insight-highlight::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
+  bottom: 0.75rem;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--violet-500);
+}
+
+/* Proof tree */
+.proof-tree {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  padding: 0.75rem 0;
+}
+
+/* Tool card progress bar animation */
+@keyframes progress-indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.tool-progress-bar {
+  width: 40%;
+  height: 2px;
+  animation: progress-indeterminate 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg, transparent, var(--violet-500), transparent);
+}
+
+/* Message fade in */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg-animate {
+  animation: fadeInUp 250ms ease-out;
+}
+
+/* Lean doc links */
+.inline-code-link {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.inline-code-link code {
+  color: var(--violet-400) !important;
+  border-bottom: 1px dashed rgba(167, 139, 250, 0.35);
+  transition: all 150ms;
+}
+
+.inline-code-link:hover code {
+  color: #c4b5fd !important;
+  border-bottom-color: rgba(196, 181, 253, 0.6);
+  background: var(--violet-bg);
+}
+
+.inline-code-link::after {
+  content: " ↗";
+  font-size: 0.6em;
+  color: var(--text-muted);
+  vertical-align: super;
+}
+
+/* KaTeX */
+.katex { color: var(--text-primary); }
+.katex .katex-html { color: var(--text-primary); }
