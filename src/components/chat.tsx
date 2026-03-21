@@ -24,6 +24,8 @@ import {
   Brain,
   Globe,
   Wrench,
+  Mic,
+  MicOff,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -355,6 +357,34 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isLoading = status === "streaming" || status === "submitted";
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+
+  const toggleMic = useCallback(() => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) { alert("Speech recognition not supported in this browser"); return; }
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+    recognition.onresult = (event: any) => {
+      let transcript = "";
+      for (let i = 0; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+      }
+      setInputValue(transcript);
+    };
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+  }, [isListening]);
 
   useEffect(() => {
     setSessions(listSessions());
@@ -620,14 +650,17 @@ export default function Chat() {
             )}
             <div className="flex items-end gap-2">
               <input ref={fileInputRef} type="file" accept="image/*,application/pdf" multiple onChange={handleFileSelect} className="hidden" />
-              <button onClick={() => fileInputRef.current?.click()} disabled={isLoading} className="w-10 h-10 flex items-center justify-center rounded-xl border border-[var(--border-default)] bg-transparent hover:bg-[var(--surface-hover)] disabled:opacity-30 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-all flex-shrink-0">
+              <button onClick={() => fileInputRef.current?.click()} disabled={isLoading} className="w-10 h-10 flex items-center justify-center rounded-xl border border-[var(--border-default)] bg-transparent hover:bg-[var(--surface-hover)] disabled:opacity-30 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-all flex-shrink-0" title="Upload image or PDF">
                 <ImagePlus className="w-4 h-4" />
+              </button>
+              <button onClick={toggleMic} disabled={isLoading} className={`w-10 h-10 flex items-center justify-center rounded-xl border flex-shrink-0 transition-all ${isListening ? "bg-red-500/15 border-red-500/30 text-red-400 animate-pulse" : "border-[var(--border-default)] bg-transparent hover:bg-[var(--surface-hover)] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"} disabled:opacity-30`} title={isListening ? "Stop listening" : "Speak your proof"}>
+                {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
               </button>
               <textarea
                 value={inputValue}
                 onChange={e => { setInputValue(e.target.value); e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 160) + "px"; }}
                 onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-                placeholder="Describe a mathematical proof to verify..."
+                placeholder={isListening ? "Listening... speak your proof" : "Type, speak, or upload a proof to verify..."}
                 rows={1}
                 className="flex-1 resize-none bg-[var(--surface-2)] border border-[var(--border-default)] rounded-xl px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--violet-border)] focus:ring-1 focus:ring-[var(--violet-bg)] transition-all"
               />
