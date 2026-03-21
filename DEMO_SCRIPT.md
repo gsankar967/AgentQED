@@ -1,10 +1,50 @@
+# AgentQED — Demo Scripts
+
+---
+
+## 1-Minute Video Script (for submission)
+
+```
+0:00 - 0:07  [Show landing page]
+             "AgentQED — verify math proofs using the Lean 4 compiler.
+              Type it, speak it, or photograph handwritten math."
+
+0:07 - 0:15  [Click mic button, speak:]
+             "Prove modus ponens: if P implies Q and P is true then Q is true"
+             [Show text appearing in real-time, hit send]
+
+0:15 - 0:30  [Show result loading, then structured output]
+             "The agent translates to Lean 4, compiles in a sandbox,
+              and shows you the Key Insight and Proof Structure first.
+              Code is collapsed — understanding comes first."
+
+0:30 - 0:42  [Upload handwritten proof photo]
+             "You can also photograph handwritten math.
+              Gemini reads the handwriting, translates, and verifies."
+
+0:42 - 0:52  [Click to expand Lean code, show doc links]
+             "Every Lean identifier links to Mathlib docs.
+              The agent self-corrects — retrying up to 12 times."
+
+0:52 - 1:00  "Built with Gemini 3.1 Pro, Vercel Sandbox, AI SDK.
+              Not LLM confidence — compiler-verified correctness."
+```
+
+### Pre-Recording Checklist
+- [ ] Hard refresh the site
+- [ ] Submit one proof first to warm the sandbox (instant responses after)
+- [ ] Have handwritten proof photo on Desktop
+- [ ] Test mic works in browser
+
+---
+
 # AgentQED — 3-Minute Live Demo Script
 
 ## Opening (20 sec)
 
 "Every math student has written a proof they thought was right — only to find a gap they missed. Every researcher has spent hours checking whether an argument actually holds.
 
-AgentQED solves this. You write a proof in plain English — or take a photo of handwritten math — and it formally verifies it using the Lean 4 theorem prover. Not LLM judgment. Real compiler verification."
+AgentQED solves this. You type a proof, speak it into a microphone, or photograph handwritten math — and it formally verifies it using the Lean 4 theorem prover. Not LLM judgment. Real compiler verification."
 
 ## Demo 1: Simple Proof (40 sec)
 

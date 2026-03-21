@@ -34,6 +34,12 @@ User writes proof in English/LaTeX/image/PDF
 | **Progress tracker** | 4-step visual progress bar: Reading → Translating → Compiling → Verified |
 | **Session history** | Sidebar with saved sessions (localStorage for long-term, sessionStorage for active tab) |
 | **New chat** | `+` button in header or sidebar to start fresh proof sessions |
+| **Voice input** | Speak your proof via microphone — real-time transcription via Web Speech API |
+| **Progressive disclosure** | Key Insight + Proof Structure shown first; code/details collapsed by default |
+| **Key Insight highlight** | The "aha moment" prominently displayed in a highlighted box |
+| **Proof Structure tree** | Visual tree showing logical skeleton of the proof |
+| **Collapsible sections** | Lean code, step breakdown, insights — expand on demand |
+| **Mandelbrot background** | Canvas-rendered fractal with vignette overlay |
 | **Example proofs** | 6 pre-built proof examples for quick demo |
 | **Real-time status** | Header badge shows Verified / Not Verified / Working |
 
@@ -48,8 +54,11 @@ User writes proof in English/LaTeX/image/PDF
 | AI SDK | Vercel AI SDK v6 | Streaming, tool calling, multi-step agent loop |
 | Sandbox | Vercel Sandbox (@vercel/sandbox) | Isolated Lean 4 execution in Firecracker microVMs |
 | Proof Engine | Lean 4 v4.16.0 (via elan) | Formal mathematical verification |
-| UI | Tailwind CSS v4 + Lucide icons | Dark theme chat interface |
+| Voice | Web Speech API | Browser-native speech-to-text for proof dictation |
+| Math Rendering | KaTeX + remark-math + rehype-katex | LaTeX in all responses |
+| UI | Tailwind CSS v4 + Lucide icons | Dark theme with design tokens |
 | Persistence | localStorage + sessionStorage | Session history (long-term + short-term) |
+| Monitoring | Sentry | Error tracking + performance |
 | Deployment | Vercel (Fluid Compute, 300s timeout) | Serverless deployment |
 
 ---
