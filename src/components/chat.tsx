@@ -110,6 +110,46 @@ function extractSection(text: string, heading: string): string | null {
 
 // ─── Tool Card ───────────────────────────────────────────────
 
+function ImageCard({ part }: { part: any }) {
+  if (!isToolPart(part)) return null;
+  const state = getToolState(part);
+  // Check if this is a generateVisualization tool
+  const toolName = part.toolName || (typeof part.type === "string" ? part.type.replace("tool-", "") : "");
+  if (toolName !== "generateVisualization") return null;
+
+  if (state === "running") {
+    return (
+      <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-2)] px-4 py-3 flex items-center gap-2.5">
+        <Loader2 className="w-4 h-4 text-violet-400 animate-spin" />
+        <span className="text-xs font-medium text-[var(--text-secondary)]">Generating proof visualization...</span>
+      </div>
+    );
+  }
+
+  if (state === "done") {
+    const output = getToolOutput(part);
+    if (output?.success && output?.imageBase64) {
+      return (
+        <div className="rounded-xl border border-[var(--violet-border)] bg-[var(--surface-2)] overflow-hidden">
+          <div className="px-4 py-2.5 border-b border-[var(--border-subtle)] flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-violet-400">Proof Visualization</span>
+          </div>
+          <div className="p-3">
+            <img
+              src={`data:${output.mediaType || "image/png"};base64,${output.imageBase64}`}
+              alt="Mathematical proof visualization"
+              className="w-full rounded-lg"
+            />
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
+  return null;
+}
+
 function ToolCard({ part }: { part: any }) {
   const [showErrors, setShowErrors] = useState(false);
   if (!isToolPart(part)) return null;
@@ -615,7 +655,11 @@ export default function Chat() {
                         const toolParts = parts.filter((p: any) => isToolPart(p));
 
                         // Render tool cards
-                        const toolCards = toolParts.map((p: any, i: number) => <ToolCard key={`tool-${i}`} part={p} />);
+                        const toolCards = toolParts.map((p: any, i: number) => {
+                          const tn = p.toolName || (typeof p.type === "string" ? p.type.replace("tool-", "") : "");
+                          if (tn === "generateVisualization") return <ImageCard key={`img-${i}`} part={p} />;
+                          return <ToolCard key={`tool-${i}`} part={p} />;
+                        });
 
                         // Render proof result card if we have substantial text
                         const proofCard = fullText.length > 50 ? <ProofResultCard text={fullText} /> : (

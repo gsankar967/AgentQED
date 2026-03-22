@@ -1,4 +1,4 @@
-import { streamText, tool, stepCountIs, type UIMessage, type ModelMessage } from "ai";
+import { streamText, tool, stepCountIs, generateImage, type UIMessage, type ModelMessage } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
 import { runLeanCode } from "@/lib/lean-runner";
@@ -88,6 +88,7 @@ CRITICAL formatting rules:
 - The Key Insight section is the most important — it should contain the "aha moment".
 - The Proof Structure tree is the second most important — keep it clean and scannable.
 - If the proof required corrections, add a "## Corrections" section.
+- After verifying the proof, ALWAYS call the generateVisualization tool to create a visual diagram of the proof concept.
 
 If the user's proof has a logical error (the statement itself is false), explain why and suggest corrections.`;
 
@@ -206,8 +207,41 @@ export async function POST(req: Request) {
             }
           },
         }),
+        generateVisualization: tool({
+          description:
+            "Generate a visual diagram or illustration of a mathematical proof concept using AI image generation. Call this AFTER the proof is verified to create a helpful visualization.",
+          inputSchema: z.object({
+            prompt: z
+              .string()
+              .describe("A detailed description of the mathematical visualization to generate. Describe the visual concept clearly — e.g., 'A diagram showing triangular numbers: dots arranged in a triangle with n rows, where each row k has k dots, illustrating that 1+2+...+n = n(n+1)/2'. Be specific about shapes, labels, and mathematical notation to include."),
+          }),
+          execute: async ({ prompt }: { prompt: string }) => {
+            try {
+              const result = await generateImage({
+                model: google.image("imagen-4.0-generate-001"),
+                prompt: `Mathematical diagram, clean educational illustration, white background, precise geometric shapes: ${prompt}`,
+                n: 1,
+                size: "1024x1024",
+              });
+              const image = result.images[0];
+              if (image) {
+                return {
+                  success: true,
+                  imageBase64: image.base64,
+                  mediaType: image.mediaType || "image/png",
+                };
+              }
+              return { success: false, error: "No image generated" };
+            } catch (error) {
+              return {
+                success: false,
+                error: `Image generation error: ${error instanceof Error ? error.message : String(error)}`,
+              };
+            }
+          },
+        }),
       },
-      stopWhen: stepCountIs(12),
+      stopWhen: stepCountIs(14),
     });
 
     return result.toUIMessageStreamResponse();
